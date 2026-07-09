@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Chatwindow from "../components/Chatwindow";
+import ChatWindow from "../components/ChatWindow";
 import socket from "../socket";
 import "./Chat.css";
 
@@ -50,7 +50,7 @@ function Chat() {
 
             {(!isMobile || selectedUser) && (
 
-                <Chatwindow
+                <ChatWindow
                     selectedUser={selectedUser}
                     onBack={()=> setSelectedUser(null)}
                 />
