@@ -17,20 +17,20 @@ app.use(cors());
 app.use(express.json());
 
 
-// HTTP server (IMPORTANT for socket.io)
+
 const server = http.createServer(app);
 
-// Socket server
+
 const io = new Server(server, {
     cors: {
         origin: "*"
     }
 });
 setIO(io);
-// Store online users
+
 const onlineUsers = getOnlineUsers();
 
-// When user connects
+
 io.on("connection", (socket) => {
     setTimeout(() => {
     socket.emit("getMessage", {
@@ -40,7 +40,6 @@ io.on("connection", (socket) => {
 }, 5000);
     console.log("User connected:", socket.id);
 
-    // user joins with their ID
     socket.on("addUser", (userId) => {
 
        
@@ -50,7 +49,6 @@ io.on("connection", (socket) => {
         io.emit("onlineUsers",[...onlineUsers.keys()]);
     });
 
-    // send message in real-time
     socket.on("sendMessage", ({ senderId, receiverId, message }) => {
 
         const receiverSocketId = onlineUsers.get(receiverId);
@@ -76,14 +74,14 @@ io.on("connection", (socket) => {
     });
 });
 
-// Routes
+
 const authRoutes = require("./routes/authRouters");
 const messageRoutes = require("./routes/message.routes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
-// DB connect + server start
+
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log("MongoDB Connected");
