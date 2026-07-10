@@ -228,3 +228,15 @@
     transition:.2s;
 
 }
+
+
+.searchinput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 9px solid #05c542;
+    border-radius: 11px;
+    outline:red;
+    box-sizing: border-box;
+    color: rgb(15, 15, 31);
+}
