@@ -8,6 +8,7 @@ function Sidebar({ onSelectUser }) {
 
     const [users, setUsers] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const navigate = useNavigate();
 
@@ -57,6 +58,12 @@ function Sidebar({ onSelectUser }) {
 
     };
 
+    const filteredUsers = users.filter((user) =>
+        user.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+    );
+
     return (
 
         <div className="sidebar">
@@ -67,7 +74,15 @@ function Sidebar({ onSelectUser }) {
                     Users
                 </h2>
 
-                {users.map((user) => {
+                <input
+                    type="text"
+                    className="searchinput"
+                    placeholder="Search users..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+
+                {filteredUsers.map((user) => {
 
                     const isOnline = onlineUsers.includes(user._id);
 
