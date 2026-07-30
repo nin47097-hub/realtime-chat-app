@@ -5,7 +5,6 @@ import socket from "../socket";
 import "./Sidebar.css";
 
 function Sidebar({ onSelectUser }) {
-
     const [users, setUsers] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -15,32 +14,22 @@ function Sidebar({ onSelectUser }) {
     useEffect(() => {
 
         socket.on("onlineUsers", (users) => {
-            console.log("Online:", users);
             setOnlineUsers(users);
         });
 
-        return () => {
-            socket.off("onlineUsers");
-        };
+        return () => socket.off("onlineUsers");
 
     }, []);
 
     useEffect(() => {
 
         const fetchUsers = async () => {
-
             try {
-
                 const res = await api.get("/users");
-
                 setUsers(res.data);
-
             } catch (err) {
-
                 console.log(err);
-
             }
-
         };
 
         fetchUsers();
@@ -48,39 +37,40 @@ function Sidebar({ onSelectUser }) {
     }, []);
 
     const handleLogout = () => {
-
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
         socket.disconnect();
 
         navigate("/");
-
     };
 
     const filteredUsers = users.filter((user) =>
-        user.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
-
         <div className="sidebar">
+
+            <h2 className="sidebar-title">
+                Chats
+            </h2>
+
+            <input
+                type="text"
+                className="searchinput"
+                placeholder="🔍 Search users..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
 
             <div className="users-container">
 
-                <h2 className="sidebar-title">
-                    Users
-                </h2>
-
-                <input
-                    type="text"
-                    className="searchinput"
-                    placeholder="Search users..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                {filteredUsers.length === 0 && (
+                    <div className="no-users">
+                        No users found.
+                    </div>
+                )}
 
                 {filteredUsers.map((user) => {
 
@@ -90,29 +80,51 @@ function Sidebar({ onSelectUser }) {
 
                         <div
                             key={user._id}
-                            onClick={() => onSelectUser(user)}
                             className="user-card"
+                            onClick={() => onSelectUser(user)}
                         >
 
                             <div className="user-header">
 
-                                <span
-                                    className={
-                                        isOnline
-                                            ? "status online"
-                                            : "status offline"
-                                    }
-                                ></span>
+                                <div className="avatar">
+                                    {user.name.charAt(0).toUpperCase()}
+                                </div>
 
-                                <p className="user-name">
-                                    {user.name}
-                                </p>
+                                <div className="user-info">
+
+                                    <div className="name-row">
+
+                                        <p className="user-name">
+                                            {user.name}
+                                        </p>
+
+                                        <span
+                                            className={
+                                                isOnline
+                                                    ? "status online"
+                                                    : "status offline"
+                                            }
+                                        ></span>
+
+                                    </div>
+
+                                    <p className="user-email">
+                                        {user.email}
+                                    </p>
+
+                                    <small
+                                        className={
+                                            isOnline
+                                                ? "online-text"
+                                                : "offline-text"
+                                        }
+                                    >
+                                        {isOnline ? "Online" : "Offline"}
+                                    </small>
+
+                                </div>
 
                             </div>
-
-                            <small className="user-email">
-                                {user.email}
-                            </small>
 
                         </div>
 
@@ -130,7 +142,6 @@ function Sidebar({ onSelectUser }) {
             </button>
 
         </div>
-
     );
 }
 
