@@ -63,7 +63,53 @@ const getMessages = async (req, res) => {
     }
 };
 
+
+const delete_message =async(req,res)=>{
+    try{
+        const message_id = req.params.messageId;
+        const userId = req.user.id;
+
+        const message = await Message.findById(message_id);
+        if(!message){
+            return res.status(404).json({
+                message:"message not found"
+        });
+        }
+
+        if(message.sender.toString()!== userId){
+            return res.status(403).json({
+                message:"not your message"
+            });
+        }
+
+        await Message.findByIdAndDelete(message._id);
+
+
+        const io = getIO();
+        const onlieusers = getOnlineUsers();
+        const reciever_socket = onlieusers.get(message.receiver.toString());
+
+        if(reciever_socket){
+            io.to(reciever_socket).emit("messageDeleted",{
+                messageId:message_id
+            });
+
+        }
+
+        return res.status(200).json({
+            message:"message deleted"
+        });
+    }catch(error){
+        return res.status(500).json({
+            message:"server error"
+        });
+
+    }
+}
+
 module.exports = {
     sendMessage,
-    getMessages
+    getMessages,
+    delete_message
 };
+
