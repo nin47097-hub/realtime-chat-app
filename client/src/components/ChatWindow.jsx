@@ -8,6 +8,7 @@ function ChatWindow({ selectedUser, onBack }) {
 
     const [messages, setMessages] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const [selectedMessage, setSelectedMessage]= useState(null);
 
     const chatRef = useRef(null);
 
@@ -46,6 +47,28 @@ function ChatWindow({ selectedUser, onBack }) {
         }
 
     };
+//delete messages
+    const deletemessages = async(messageId)=>{
+        try{
+            const token = localStorage.getItem("token");
+            const response = await api.delete(`/messages/${messageId}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setMessages((prev)=>{
+                return prev.filter((msg)=> msg._id!==messageId);
+            })
+
+        }
+        catch(error){
+            console.log(error);
+
+        }
+
+
+    }
 
     useEffect(() => {
         fetchMessages();
@@ -62,7 +85,7 @@ function ChatWindow({ selectedUser, onBack }) {
 
     }, [messages]);
 
-    // Online users
+
     useEffect(() => {
 
         socket.on("onlineUsers", (users) => {
@@ -79,7 +102,7 @@ function ChatWindow({ selectedUser, onBack }) {
 
     }, []);
 
-    // New messages
+  
     useEffect(() => {
 
         socket.on("getMessage", (data) => {
@@ -94,12 +117,26 @@ function ChatWindow({ selectedUser, onBack }) {
             }
 
         });
+        socket.on("messageDeleted", (data)=>{
+            setMessages((prev)=>{
+                return prev.filter((msg)=>{
+                    return msg._id !== data.messageId;
+                })
+
+            })
+
+            
+
+        });
 
         return () => {
-
+            
             socket.off("getMessage");
+            socket.off("messageDeleted");
 
         };
+
+        
 
     }, [selectedUser]);
 
@@ -170,7 +207,14 @@ function ChatWindow({ selectedUser, onBack }) {
                                             ? "message-row mine"
                                             : "message-row other"
                                     }
+                                    onClick={()=> setSelectedMessage(msg._id)}
                                 >
+                                    {selectedMessage ===msg._id && isMyMessage &&(
+                                        <button onClick={()=> deletemessages(msg._id)}>
+                                            Delete
+
+                                        </button>
+                                    )}
 
                                     <div
                                         className={
