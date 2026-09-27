@@ -14,27 +14,7 @@ function Sidebar({ onSelectUser }) {
 
     const navigate = useNavigate();
 
-    {friendsopen && (
-        <div className="friendwindow">
-            <h3 className="friendslist">👥 Friends List
 
-            </h3>
-                
-
-
-        
-            <button 
-                className="close-frinedswindow"
-                onClick={()=>setfriendsopen(false)}
-            >
-                close
-
-            </button>
-
-        </div>
-
-
-    )}
 
     useEffect(() => {
 
@@ -85,9 +65,27 @@ function Sidebar({ onSelectUser }) {
 
                 </h2>
 
+
                 //userfucntin
                 <Users  onClick={()=>setfriendsopen(true)}/>
+
             </div>
+            {friendsopen && (
+                <div className="friendwindow">
+                    <h3 className="friendslist">
+                        👥 Friends List
+                    </h3>
+
+                    <button
+                        className="close-frinedswindow"
+                        onClick={() => setfriendsopen(false)}
+                    >
+                        close
+                    </button>
+                </div>
+            )}
+
+
 
             <input
                 type="text"
