@@ -16,6 +16,8 @@
 
     box-shadow:
         0 10px 35px rgba(0,0,0,.45);
+
+    position: relative;
 }
 
 .sidebar-title{
@@ -129,8 +131,9 @@
 }
 
 .user-email{
+    width: 100%;
     margin-top:6px;
-    margin-left:24px;
+    margin-left:4px;
     color:#A6A8AF;
     font-size:13px;
 }
@@ -221,4 +224,10 @@
     color:#888;
     text-align:center;
     margin-top:30px;
+}
+
+.friendwindow {
+    position: absolute;
+    top: 50px;
+    left: 10px;
 }
