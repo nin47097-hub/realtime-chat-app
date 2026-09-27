@@ -3,31 +3,27 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import socket from "../socket";
 import "./Sidebar.css";
-
 import { Users } from "lucide-react";
 
 function Sidebar({ onSelectUser }) {
+
     const [users, setUsers] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState([]);
+
     const [friendsopen, setfriendsopen] = useState(false);
 
     const navigate = useNavigate();
 
-
-
     useEffect(() => {
-
         socket.on("onlineUsers", (users) => {
             setOnlineUsers(users);
         });
 
         return () => socket.off("onlineUsers");
-
     }, []);
 
     useEffect(() => {
-
         const fetchUsers = async () => {
             try {
                 const res = await api.get("/users");
@@ -38,7 +34,6 @@ function Sidebar({ onSelectUser }) {
         };
 
         fetchUsers();
-
     }, []);
 
     const handleLogout = () => {
@@ -57,21 +52,25 @@ function Sidebar({ onSelectUser }) {
     return (
         <div className="sidebar">
 
+            {/* Chats + Friends */}
             <div className="sidebar-title">
+
                 <h2 className="chats-friends">
-                    chats
-
-                    
-
+                    Chats
                 </h2>
 
-
-                //userfucntin
-                <Users  onClick={()=>setfriendsopen(true)}/>
+                <Users
+                    size={28}
+                    onClick={() => setfriendsopen(true)}
+                    style={{ cursor: "pointer" }}
+                />
 
             </div>
+
+            {/* Friends Window */}
             {friendsopen && (
                 <div className="friendwindow">
+
                     <h3 className="friendslist">
                         👥 Friends List
                     </h3>
@@ -80,21 +79,22 @@ function Sidebar({ onSelectUser }) {
                         className="close-frinedswindow"
                         onClick={() => setfriendsopen(false)}
                     >
-                        close
+                        Close
                     </button>
+
                 </div>
             )}
 
-
-
+            {/* Search */}
             <input
                 type="text"
                 className="searchinput"
-                placeholder="🔍Search users..."
+                placeholder="🔍 Search users..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
 
+            {/* Users */}
             <div className="users-container">
 
                 {filteredUsers.length === 0 && (
@@ -108,7 +108,6 @@ function Sidebar({ onSelectUser }) {
                     const isOnline = onlineUsers.includes(user._id);
 
                     return (
-
                         <div
                             key={user._id}
                             className="user-card"
@@ -158,13 +157,12 @@ function Sidebar({ onSelectUser }) {
                             </div>
 
                         </div>
-
                     );
-
                 })}
 
             </div>
 
+            {/* Logout */}
             <button
                 className="logout-btn"
                 onClick={handleLogout}
