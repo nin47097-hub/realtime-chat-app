@@ -4,12 +4,37 @@ import api from "../services/api";
 import socket from "../socket";
 import "./Sidebar.css";
 
+import { Users } from "lucide-react";
+
 function Sidebar({ onSelectUser }) {
     const [users, setUsers] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [friendsopen, setfriendsopen] = useState(false);
 
     const navigate = useNavigate();
+
+    {friendsopen && (
+        <div className="friendwindow">
+            <h3 className="friendslist">👥 Friends List
+
+            </h3>
+                
+
+
+        
+            <button 
+                className="close-frinedswindow"
+                onClick={()=>setfriendsopen(false)}
+            >
+                close
+
+            </button>
+
+        </div>
+
+
+    )}
 
     useEffect(() => {
 
@@ -52,14 +77,22 @@ function Sidebar({ onSelectUser }) {
     return (
         <div className="sidebar">
 
-            <h2 className="sidebar-title">
-                Chats
-            </h2>
+            <div className="sidebar-title">
+                <h2 className="chats-friends">
+                    chats
+
+                    
+
+                </h2>
+
+                //userfucntin
+                <Users  onClick={()=>setfriendsopen(true)}/>
+            </div>
 
             <input
                 type="text"
                 className="searchinput"
-                placeholder="🔍 Search users..."
+                placeholder="🔍Search users..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
